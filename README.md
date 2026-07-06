@@ -26,6 +26,23 @@ You can find tutorials at https://youtu.be/wWdG3wrGAbM
 
 Additional information and help is availlable at https://groups.io/g/Interferometry
 
+# Repository layout
+
+All of DFTFringe's own C++/Qt source (`.cpp`/`.h`/`.ui`) now lives under
+`src/`, instead of being flat in the repository root. Third-party bundled
+code (`bezier/`, `boost/`, `cnpy/`, `SingleApplication/`, `spdlog/`,
+`zernike/`) stays where it was - it was already contained in its own
+folders and wasn't part of the clutter. The repository root now only holds
+project files (`DFTFringe*.pro`), packaging/docs (`ColorMaps/`, `res/`,
+`LICENSES/`, this readme, etc.), and the third-party folders above.
+
+This was a pure file-move: `SOURCES`/`HEADERS`/`FORMS` in all three
+`.pro` files (`DFTFringe.pro`, `DFTFringe_Dale.pro`, `DFTFringe_QT5.pro`)
+were updated to point at `src/`, but no `#include` paths needed to change -
+qmake already puts the project root on the include path (`-I.`), and
+sibling headers inside `src/` still resolve to each other by same-directory
+lookup. No application logic changed.
+
 # Wafer profiling fork (this branch)
 
 This fork adds a webcam-driven capture path on top of DFTFringe's existing

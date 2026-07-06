@@ -65,8 +65,9 @@ jobs:
             ${{env.QT_version}}\mingw_64\modules\*
             ${{env.QT_version}}\mingw_64\plugins\platforms\*
             ${{env.QT_version}}\mingw_64\plugins\imageformats\*
+            ${{env.QT_version}}\mingw_64\plugins\multimedia\*
             ${{env.QT_version}}\mingw_64\translations\*
-          key: ${{ runner.os }}-openCV-${{env.openCV_version}}-QT-${{env.QT_version}}
+          key: ${{ runner.os }}-openCV-${{env.openCV_version}}-QT-${{env.QT_version}}-multimedia
 
       # all what follows is only run on cache miss
 
@@ -92,7 +93,7 @@ jobs:
         run: pip install aqtinstall
       - name: install QT
         if: steps.cache-openCV-QT.outputs.cache-hit != 'true'
-        run: aqt install-qt windows desktop ${{env.QT_version}} win64_mingw -m qtcharts qtdatavis3d
+        run: aqt install-qt windows desktop ${{env.QT_version}} win64_mingw -m qtcharts qtdatavis3d qtmultimedia
       - uses: actions/checkout@v4
         if: steps.cache-openCV-QT.outputs.cache-hit != 'true'
         with:
@@ -296,8 +297,9 @@ jobs:
             ${{env.QT_version}}\mingw_64\modules\*
             ${{env.QT_version}}\mingw_64\plugins\platforms\*
             ${{env.QT_version}}\mingw_64\plugins\imageformats\*
+            ${{env.QT_version}}\mingw_64\plugins\multimedia\*
             ${{env.QT_version}}\mingw_64\translations\*
-          key: ${{ runner.os }}-openCV-${{env.openCV_version}}-QT-${{env.QT_version}}
+          key: ${{ runner.os }}-openCV-${{env.openCV_version}}-QT-${{env.QT_version}}-multimedia
           fail-on-cache-miss: true
 
       # this enables the problem matcher

@@ -3,7 +3,7 @@
 #include "dftarea.h"
 #include "IgramArea.h"
 #include "mainwindow.h"
-#include "circleoutline.h"
+#include "Circleoutline.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>

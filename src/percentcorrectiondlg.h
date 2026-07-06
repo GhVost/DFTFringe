@@ -13,6 +13,10 @@
 #include <QVBoxLayout>
 #include "percentCorrectionSurface.h"
 
+// Qt5 puts data-visualization types in this namespace (Qt6 keeps it for
+// compatibility); previously pulled in transitively via graphmodifier.h
+using namespace QtDataVisualization;
+
 namespace Ui {
 class percentCorrectionDlg;
 }

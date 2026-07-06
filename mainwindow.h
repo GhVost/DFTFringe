@@ -64,6 +64,8 @@ public:
     void updateMetrics(wavefront& wf);
     int addTab(QWidget* w, const QString &name);
     mirrorDlg *m_mirrorDlg;
+    QPushButton *m_wavelengthBtn;
+    void updateWavelengthButtonText();
     QProgressBar *progBar;
     static MainWindow *me;
     QLabel *status1;
@@ -121,6 +123,8 @@ private slots:
     void selectDftTab();
     void newMirrorDlgPath(const QString &path);
     void on_actionRead_WaveFront_triggered();
+    void openLiveCaptureWizard();
+    void editWavelength();
 
     void on_actionPreferences_triggered();
     void mainTabChanged(int);

@@ -55,6 +55,7 @@
 
 #include "zapm_interface.h"
 #include "zernikeprocess.h"
+#include "livecapturewizard.h"
 
 
 using namespace QtConcurrent;
@@ -92,6 +93,8 @@ MainWindow::MainWindow(QWidget *parent) :
     //rw = ui->toolBar->widgetForAction(ui->actionSubtract_wave_front);
     //rw->setStyleSheet(toolButtonStyle);
     me = this;
+    QAction *liveCaptureAction = ui->menuTools->addAction("Live Capture (Webcam)...");
+    connect(liveCaptureAction, &QAction::triggered, this, &MainWindow::openLiveCaptureWizard);
     this->setAttribute(Qt::WA_DeleteOnClose);
     ui->toolBar->setStyleSheet("QToolBar { spacing: 10px;}");
 
@@ -165,6 +168,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(m_profilePlot, &ProfilePlot::profileAngleChanged, m_contourView->getPlot(), &ContourPlot::drawProfileLine);
     connect(m_contourView->getPlot()    , &ContourPlot::sigPointSelected, m_profilePlot, &ProfilePlot::contourPointSelected);
     m_mirrorDlg = mirrorDlg::get_Instance();
+    m_wavelengthBtn = new QPushButton(this);
+    m_wavelengthBtn->setFlat(true);
+    m_wavelengthBtn->setToolTip("Click to change the interferometer laser wavelength");
+    updateWavelengthButtonText();
+    ui->toolBar->addWidget(m_wavelengthBtn);
+    connect(m_wavelengthBtn, &QPushButton::clicked, this, &MainWindow::editWavelength);
     review->s2->addWidget(review->s1);
     review->s2->addWidget(m_profilePlot);
     m_profilePlot->setStyleSheet( {"border: 3px outset darkgrey;"});
@@ -686,6 +695,29 @@ void MainWindow::on_actionRead_WaveFront_triggered()
     this->setCursor(Qt::ArrowCursor);
     ui->tabWidget->setCurrentIndex(2);
 
+}
+
+void MainWindow::openLiveCaptureWizard()
+{
+    LiveCaptureWizard dlg(this);
+    dlg.exec();
+}
+
+void MainWindow::updateWavelengthButtonText()
+{
+    m_wavelengthBtn->setText(QString(QChar(0x03BB) + QString(" = %1 nm")).arg(m_mirrorDlg->lambda, 0, 'f', 1));
+}
+
+void MainWindow::editWavelength()
+{
+    bool ok = false;
+    double val = QInputDialog::getDouble(this, "Interferometer Wavelength",
+                                          "Laser wavelength (nm):", m_mirrorDlg->lambda,
+                                          100.0, 2000.0, 1, &ok);
+    if (ok) {
+        m_mirrorDlg->newLambda(QString::number(val));
+        updateWavelengthButtonText();
+    }
 }
 /*
 fields = l.split()

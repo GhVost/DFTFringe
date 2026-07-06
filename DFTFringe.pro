@@ -14,7 +14,7 @@ DEFINES += QAPPLICATION_CLASS=QApplication
 
 TEMPLATE = app
 
-QT += charts concurrent core datavisualization gui network opengl widgets xml
+QT += charts concurrent core datavisualization gui multimedia network opengl widgets xml
 
 qtHaveModule(printsupport): QT += printsupport
 
@@ -265,7 +265,10 @@ SOURCES += SingleApplication/singleapplication.cpp \
     zernikepolar.cpp \
     zernikeprocess.cpp \
     zernikes.cpp \
-    zernikesmoothingdlg.cpp
+    zernikesmoothingdlg.cpp \
+    autoreconstruct.cpp \
+    webcamsource.cpp \
+    livecapturewizard.cpp
 
 HEADERS += bezier/bezier.h \
     SingleApplication/singleapplication_p.h \
@@ -387,7 +390,10 @@ HEADERS += bezier/bezier.h \
     zernikepolar.h \
     zernikeprocess.h \
     zernikes.h \
-    zernikesmoothingdlg.h
+    zernikesmoothingdlg.h \
+    autoreconstruct.h \
+    webcamsource.h \
+    livecapturewizard.h
 
 FORMS += arbitrarywavefronthelp.ui \
     annulushelpdlg.ui \

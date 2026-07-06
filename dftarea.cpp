@@ -1134,6 +1134,16 @@ void DFTArea::outlineDoneSig(){
     m_outlineComplete = true;
 
 }
+
+void DFTArea::setAutoMask(const cv::Mat &mask, const CircleOutline &outside){
+    m_mask = mask.clone();
+    m_outside = outside;
+    m_center = CircleOutline(outside.m_center, 0.0);
+    m_poly.clear();
+    m_outlineComplete = true;
+    if (tools)
+        tools->wasPressed = true;
+}
 #include "psiphasedisplay.h"
 void DFTArea::doPSIstep1(){
     if (!doPSIstep2())

@@ -63,6 +63,11 @@ public:
     QVector<double> getPhases();
 void diffract();
 
+    // Injects a mask/outline computed elsewhere (e.g. from live-capture fringe
+    // visibility) bypassing the manual outline-drag dialog, then arms
+    // makeSurface() to run on the next call.
+    void setAutoMask(const cv::Mat &mask, const CircleOutline &outside);
+
     bool success;
 public slots:
     void doPSIstep1();

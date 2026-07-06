@@ -26,6 +26,73 @@ You can find tutorials at https://youtu.be/wWdG3wrGAbM
 
 Additional information and help is availlable at https://groups.io/g/Interferometry
 
+# Wafer profiling fork (this branch)
+
+This fork adds a webcam-driven capture path on top of DFTFringe's existing
+vortex/PSI reconstruction pipeline, for profiling semiconductor wafers on an
+old Zygo interferometer with a flat reference etalon, instead of telescope
+mirrors. No existing reconstruction code was changed or replaced - these are
+additive entry points into the same `DFTArea`/`IgramArea` pipeline that
+manual interferogram loading already uses.
+
+## What was added
+
+- **`Tools > Live Capture (Webcam)...`** (`livecapturewizard.h/.cpp`) - a
+  dialog that streams a live webcam preview (`webcamsource.h/.cpp`, via Qt
+  Multimedia since OpenCV's `videoio` isn't available on this MinGW
+  toolchain), lets you pick the camera and the interferometer's FOV setting
+  (105 mm or 33 mm), and records a stack of frames while you nudge a tilt
+  adjustment knob (ambient vibration + the nudge supplies frame-to-frame
+  fringe variation - no PSI stepper motor required).
+- **`autoreconstruct.h/.cpp`** - from that frame stack, automatically derives:
+  - a **valid-surface mask**, from per-pixel fringe visibility (min/max
+    intensity range across the stack), so no manual outline dragging is
+    needed;
+  - the **vortex center-filter radius**, by re-running the same
+    normalize/unwrap sequence as `DFTArea::makeSurface()` over a small radius
+    sweep and scoring each candidate (currently: unwrapped-surface
+    smoothness via Laplacian variance);
+  - the **lateral mm/pixel scale**, by detecting the bright illuminated FOV
+    disk against the dark surround (Otsu threshold + contour + min enclosing
+    circle) and dividing the known FOV diameter (105/33 mm) by its pixel
+    diameter.
+  - On accept, the representative frame + mask + filter radius are handed to
+    `DFTArea::setAutoMask()` (new method) and `makeSurface()` - the same call
+    path manual loading uses, so export etc. all work unchanged.
+- **Toolbar wavelength control** - a `λ = ### nm` button next to the existing
+  toolbar buttons, reading `mirrorDlg::lambda`. Clicking it opens a
+  confirmation dialog (`QInputDialog`) to change it, instead of an inline
+  field that could be nudged by accident.
+
+## What still needs testing (no physical hardware available in dev environment)
+
+- **End-to-end with the real Zygo + webcam**: everything above was verified
+  with synthetic fringe data and UI automation only; nothing has been run
+  against an actual wafer, flat etalon, or IMX766/webcam feed yet.
+- **Mask quality on real fringes**: the visibility-mask threshold
+  (`minRangeThreshold`, default 15 intensity levels) and morphology kernel
+  size were tuned against synthetic frames - real sensor noise, uneven
+  illumination, or a dirty etalon may need different values.
+- **Center-filter radius search**: the smoothness scoring picks a radius
+  from a sweep (2-40 px by default) - verify it converges on a sane value
+  across a range of real fringe densities/tilts, not just the synthetic
+  test case.
+- **FOV disk detection**: confirm the Otsu threshold reliably finds the
+  illuminated disk edge under the Zygo's actual illumination (glare,
+  vignetting, or a non-circular clear aperture could throw off
+  `cv::minEnclosingCircle`).
+- **Camera identification**: on the one real test so far the webcam wasn't
+  identified as "IMX766" in the OS device list (likely a generic UVC name) -
+  confirm the right device is selectable and that resolution/format is
+  usable for fringe detail.
+- **Frame count vs. capture quality**: the wizard still uses a fixed frame
+  count (default 40) rather than the coverage-driven adaptive capture
+  discussed for a later iteration - worth checking whether 40 frames of
+  tilt-knob nudging reliably yields fringes over the whole valid area, or
+  whether some spots on a given wafer size are consistently under-sampled.
+- **Wavelength dialog range**: hardcoded to 100-2000 nm; confirm this covers
+  the actual Zygo laser wavelength in use.
+
 # How to install DFTFringe on windows
 
 :point_right: Follow the link and use the installer:

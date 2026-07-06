@@ -11,7 +11,6 @@
 #include <QtDataVisualization/qbardataproxy.h>
 #include <QtDataVisualization/qabstract3dseries.h>
 #include <QVBoxLayout>
-#include "graphmodifier.h"
 #include "percentCorrectionSurface.h"
 
 namespace Ui {
@@ -56,7 +55,6 @@ class percentCorrectionDlg : public QDialog
     void  make_3DBarControls(QWidget *widget, QVBoxLayout *vlayout);
     void adjustZonestoDifferentDiameter(double old, double newDiam);
     Q3DBars *m_barGraph;
-    GraphModifier *modifier;
     QBar3DSeries *m_series;
     QBarDataProxy *m_proxy;
 public:

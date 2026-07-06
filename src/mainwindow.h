@@ -123,7 +123,9 @@ private slots:
     void selectDftTab();
     void newMirrorDlgPath(const QString &path);
     void on_actionRead_WaveFront_triggered();
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
     void openLiveCaptureWizard();
+#endif
     void editWavelength();
 
     void on_actionPreferences_triggered();

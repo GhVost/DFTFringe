@@ -55,7 +55,9 @@
 
 #include "zapm_interface.h"
 #include "zernikeprocess.h"
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 #include "livecapturewizard.h"
+#endif
 
 
 using namespace QtConcurrent;
@@ -93,8 +95,11 @@ MainWindow::MainWindow(QWidget *parent) :
     //rw = ui->toolBar->widgetForAction(ui->actionSubtract_wave_front);
     //rw->setStyleSheet(toolButtonStyle);
     me = this;
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
+    // live capture needs the Qt6-only multimedia API (QMediaCaptureSession/QVideoSink)
     QAction *liveCaptureAction = ui->menuTools->addAction("Live Capture (Webcam)...");
     connect(liveCaptureAction, &QAction::triggered, this, &MainWindow::openLiveCaptureWizard);
+#endif
     this->setAttribute(Qt::WA_DeleteOnClose);
     ui->toolBar->setStyleSheet("QToolBar { spacing: 10px;}");
 
@@ -697,11 +702,13 @@ void MainWindow::on_actionRead_WaveFront_triggered()
 
 }
 
+#if QT_VERSION >= QT_VERSION_CHECK(6, 0, 0)
 void MainWindow::openLiveCaptureWizard()
 {
     LiveCaptureWizard dlg(this);
     dlg.exec();
 }
+#endif
 
 void MainWindow::updateWavelengthButtonText()
 {

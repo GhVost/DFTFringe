@@ -36,12 +36,13 @@ folders and wasn't part of the clutter. The repository root now only holds
 project files (`DFTFringe*.pro`), packaging/docs (`ColorMaps/`, `res/`,
 `LICENSES/`, this readme, etc.), and the third-party folders above.
 
-This was a pure file-move: `SOURCES`/`HEADERS`/`FORMS` in all three
-`.pro` files (`DFTFringe.pro`, `DFTFringe_Dale.pro`, `DFTFringe_QT5.pro`)
-were updated to point at `src/`, but no `#include` paths needed to change -
-qmake already puts the project root on the include path (`-I.`), and
-sibling headers inside `src/` still resolve to each other by same-directory
-lookup. No application logic changed.
+The `SOURCES`/`HEADERS`/`FORMS` lists shared by the three project variants
+(`DFTFringe.pro`, `DFTFringe_Dale.pro`, `DFTFringe_QT5.pro`) live in a
+single include, **`DFTFringe_files.pri`** - when adding, removing, or
+renaming a source file, edit that one file and all three variants pick it
+up. No `#include` paths changed with the `src/` move - qmake puts the
+project root on the include path (`-I.`), and sibling headers inside
+`src/` resolve to each other by same-directory lookup.
 
 # Wafer profiling fork (this branch)
 
@@ -51,6 +52,11 @@ old Zygo interferometer with a flat reference etalon, instead of telescope
 mirrors. No existing reconstruction code was changed or replaced - these are
 additive entry points into the same `DFTArea`/`IgramArea` pipeline that
 manual interferogram loading already uses.
+
+The whole feature requires Qt 6 (it uses the Qt 6 multimedia API -
+`QMediaCaptureSession`/`QVideoSink`). Qt 5 builds compile it out: the
+sources are only listed for Qt 6 in `DFTFringe_files.pri`, and the menu
+entry is `#if`-gated in `mainwindow.cpp`.
 
 ## What was added
 
@@ -179,7 +185,7 @@ Here again, I have found easier to use Python and [aqtinstall](https://aqtinstal
 
 From within `C:\buildingDFTFringe` do the following:
 ```
-aqt install-qt windows desktop 6.8.3 win64_mingw -m qtcharts qtdatavis3d qt5compat
+aqt install-qt windows desktop 6.8.3 win64_mingw -m qtcharts qtdatavis3d qtmultimedia qt5compat
 aqt install-qt windows desktop 6.8.3 win64_mingw --archives qtbase qtsvg
 ```
 
@@ -198,7 +204,7 @@ Run the installer and go through it. You will need to do a custom installation t
 **Which components to choose ?**  
 You will need `QT 6.8.3`.  
 For faster installation, you probably do not need `Qt design studio`.   
-In the details of Qt 6.8.3 you only need `MinGW 13.1.0 64-bit`, `Qt 5 Compatibility module`, `QT Charts` and `Qt Data Visualization`.  
+In the details of Qt 6.8.3 you only need `MinGW 13.1.0 64-bit`, `Qt 5 Compatibility module`, `QT Charts`, `Qt Data Visualization` and `Qt Multimedia` (needed for the live-capture feature).  
 You probably want to install `Qt Creator`. This is Qt's IDE and if you are here it's probably because you need to debug (breakpoints, step by step, variables, ...).  
 You may want to install `Cmake`, `Ninja` and `Qt Installer Framework`.
 

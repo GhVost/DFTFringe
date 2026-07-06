@@ -65,6 +65,7 @@ jobs:
             ${{env.QT_version}}\mingw_64\modules\*
             ${{env.QT_version}}\mingw_64\plugins\platforms\*
             ${{env.QT_version}}\mingw_64\plugins\imageformats\*
+            ${{env.QT_version}}\mingw_64\plugins\multimedia\*
             ${{env.QT_version}}\mingw_64\translations\*
           key: ${{ runner.os }}-openCV-${{env.openCV_version}}-QT-${{env.QT_version}}-multimedia
 
@@ -296,6 +297,7 @@ jobs:
             ${{env.QT_version}}\mingw_64\modules\*
             ${{env.QT_version}}\mingw_64\plugins\platforms\*
             ${{env.QT_version}}\mingw_64\plugins\imageformats\*
+            ${{env.QT_version}}\mingw_64\plugins\multimedia\*
             ${{env.QT_version}}\mingw_64\translations\*
           key: ${{ runner.os }}-openCV-${{env.openCV_version}}-QT-${{env.QT_version}}-multimedia
           fail-on-cache-miss: true
